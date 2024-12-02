@@ -10,6 +10,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-end">
         <a href="<?php echo site_url('/user-form') ?>" class="btn btn-success mb-2">Add User</a>
+        <a href="<?php echo site_url('/export') ?>" class="btn btn-success mb-2">Export</a>
     </div>
     <?php
     if(isset($_SESSION['msg'])){

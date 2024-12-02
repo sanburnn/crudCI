@@ -2,6 +2,9 @@
 namespace App\Controllers;
 use App\Models\UserModel;
 use CodeIgniter\Controller;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class UserCrud extends Controller
 {
     // show users list
@@ -51,4 +54,40 @@ class UserCrud extends Controller
         $data['user'] = $userModel->where('id', $id)->delete($id);
         return $this->response->redirect(site_url('/users-list'));
     }    
+
+    public function export()
+    {
+        // $dataMobil = $mobil->findAll();
+
+        $spreadsheet = new Spreadsheet();
+        // tulis header/nama kolom 
+        $spreadsheet->setActiveSheetIndex(0)
+                    ->setCellValue('A1', 'Nama')
+                    ->setCellValue('B1', 'Kelas')
+                    ->setCellValue('C1', 'Jurusan')
+                    ->setCellValue('D1', 'Angkatan')
+                    ->setCellValue('E1', 'NIS');
+        
+        $column = 2;
+        // tulis data mobil ke cell
+        // foreach($dataMobil as $data) {
+        //     $spreadsheet->setActiveSheetIndex(0)
+        //                 ->setCellValue('A' . $column, $data['nama'])
+        //                 ->setCellValue('B' . $column, $data['kelas'])
+        //                 ->setCellValue('C' . $column, $data['jurusan'])
+        //                 ->setCellValue('D' . $column, $data['angkatan'])
+        //                 ->setCellValue('E' . $column, $data['nis']);
+        //     $column++;
+        // }
+        // tulis dalam format .xlsx
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'Data Siswa';
+
+        // Redirect hasil generate xlsx ke web client
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename='.$fileName.'.xlsx');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
 }
